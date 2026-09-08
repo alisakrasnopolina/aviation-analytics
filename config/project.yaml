@@ -1,15 +1,20 @@
 project:
   name: aviation-analytics
 
-data:
-  test_start_date: "2025-01-01"
-  test_end_date: "2025-01-31"
-
 airports:
   - code: JFK
     name: John F. Kennedy International Airport
+    latitude: 40.6413
+    longitude: -73.7781
+
+bts:
+  default_start_month: "2025-01"
+  target_end_month: "2025-02"
 
 weather:
+  default_start_date: "2025-01-01"
+  target_end_date: "2025-02-05"
+
   hourly_variables:
     - temperature_2m
     - relative_humidity_2m
