@@ -1,0 +1,24 @@
+project:
+  name: aviation-analytics
+
+data:
+  test_start_date: "2025-01-01"
+  test_end_date: "2025-01-31"
+
+airports:
+  - code: JFK
+    name: John F. Kennedy International Airport
+
+weather:
+  hourly_variables:
+    - temperature_2m
+    - relative_humidity_2m
+    - precipitation
+    - rain
+    - snowfall
+    - weather_code
+    - pressure_msl
+    - cloud_cover
+    - wind_speed_10m
+    - wind_direction_10m
+    - wind_gusts_10m
