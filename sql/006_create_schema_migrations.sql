@@ -1,0 +1,7 @@
+CREATE SCHEMA IF NOT EXISTS meta;
+
+CREATE TABLE IF NOT EXISTS meta.schema_migrations (
+    version VARCHAR(20) PRIMARY KEY,
+    filename VARCHAR(255) NOT NULL,
+    applied_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);

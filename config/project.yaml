@@ -9,11 +9,11 @@ airports:
 
 bts:
   default_start_month: "2025-01"
-  target_end_month: "2025-02"
+  target_end_month: "2025-03"
 
 weather:
   default_start_date: "2025-01-01"
-  target_end_date: "2025-02-05"
+  target_end_date: "2025-03-31"
 
   hourly_variables:
     - temperature_2m
