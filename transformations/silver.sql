@@ -1,7 +1,7 @@
 -- Bronze -> Silver
 -- Очистка, нормализация и разрешение сущностей
 
--- 1. Справочник аэропортов
+-- 1. Заполнение справочника аэропортов
 INSERT INTO silver.dim_airport (
     airport_code,
     airport_name,
@@ -11,14 +11,41 @@ INSERT INTO silver.dim_airport (
     longitude,
     timezone
 )
-VALUES (
+VALUES
+(
     'JFK',
     'John F. Kennedy International Airport',
-    'New York',
-    'NY',
-    40.6413,
-    -73.7781,
+    'New York', 'NY',
+    40.6413, -73.7781,
     'America/New_York'
+),
+(
+    'LAX',
+    'Los Angeles International Airport',
+    'Los Angeles', 'CA',
+    33.9416, -118.4085,
+    'America/Los_Angeles'
+),
+(
+    'ORD',
+    'O''Hare International Airport',
+    'Chicago', 'IL',
+    41.9742, -87.9073,
+    'America/Chicago'
+),
+(
+    'ATL',
+    'Hartsfield-Jackson Atlanta International Airport',
+    'Atlanta', 'GA',
+    33.6407, -84.4277,
+    'America/New_York'
+),
+(
+    'DFW',
+    'Dallas/Fort Worth International Airport',
+    'Dallas', 'TX',
+    32.8998, -97.0403,
+    'America/Chicago'
 )
 ON CONFLICT (airport_code) DO NOTHING;
 

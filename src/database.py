@@ -4,10 +4,11 @@ from dotenv import load_dotenv
 from sqlalchemy import create_engine
 from sqlalchemy import text
 
+from functools import lru_cache
 
 load_dotenv()
 
-
+@lru_cache(maxsize=1)
 def get_engine():
     user = os.getenv("POSTGRES_USER")
     password = os.getenv("POSTGRES_PASSWORD")
@@ -20,7 +21,14 @@ def get_engine():
         f"{user}:{password}@{host}:{port}/{database}"
     )
 
-    return create_engine(url)
+    return create_engine(
+        url,
+        pool_size=2,
+        max_overflow=0,
+        pool_timeout=30,
+        pool_pre_ping=True,
+        pool_recycle=1800,
+    )
 
 def start_load(source, object_name, period_from=None, period_to=None):
     engine = get_engine()

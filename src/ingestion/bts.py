@@ -325,6 +325,7 @@ def load_bts_to_bronze(df):
 def load_bts_month(
     month_string,
     airports,
+    update_watermark=True,
 ):
     load_id = start_load(
         source="BTS",
@@ -365,12 +366,13 @@ def load_bts_month(
             rows_skipped=rows_skipped,
         )
 
-        update_source_watermark(
-            source="BTS",
-            object_name="flights",
-            watermark_type="month",
-            watermark_value=month_string,
-        )
+        if update_watermark:
+            update_source_watermark(
+                source="BTS",
+                object_name="flights",
+                watermark_type="month",
+                watermark_value=month_string,
+            )
 
         print(
             f"BTS {month_string}:"
