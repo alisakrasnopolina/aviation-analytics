@@ -1,0 +1,80 @@
+{
+  "run_id": "20261026T151541584865Z",
+  "scenario": "retrospective rolling one-day-ahead; observed history through t-1",
+  "targets": [
+    "total_flights",
+    "delay_share"
+  ],
+  "features": [
+    "airport_code",
+    "day_of_week",
+    "month",
+    "is_weekend",
+    "time_index",
+    "year_sin",
+    "year_cos",
+    "total_flights_lag_1",
+    "total_flights_lag_7",
+    "total_flights_lag_14",
+    "total_flights_lag_28",
+    "total_flights_mean_7",
+    "total_flights_mean_28",
+    "delay_share_lag_1",
+    "delay_share_lag_7",
+    "delay_share_lag_14",
+    "delay_share_lag_28",
+    "delay_share_mean_7",
+    "delay_share_mean_28",
+    "cancelled_flights_lag_1",
+    "cancelled_flights_lag_7",
+    "cancelled_flights_lag_14",
+    "cancelled_flights_lag_28",
+    "cancelled_flights_mean_7",
+    "cancelled_flights_mean_28",
+    "avg_temperature_lag_1",
+    "avg_temperature_mean_7",
+    "total_precipitation_lag_1",
+    "total_precipitation_mean_7",
+    "avg_wind_speed_lag_1",
+    "avg_wind_speed_mean_7",
+    "max_wind_gust_lag_1",
+    "max_wind_gust_mean_7"
+  ],
+  "seed": 42,
+  "train_end": "2024-12-31",
+  "validation_end": "2025-06-30",
+  "test_end": "2025-12-31",
+  "selected_catboost_parameters": {
+    "total_flights": {
+      "depth": 4,
+      "iterations": 225
+    },
+    "delay_share": {
+      "depth": 6,
+      "iterations": 66
+    }
+  },
+  "base_parameters": {
+    "loss_function": "RMSE",
+    "eval_metric": "MAE",
+    "iterations": 1200,
+    "learning_rate": 0.04,
+    "random_seed": 42,
+    "thread_count": 4,
+    "allow_writing_files": false
+  },
+  "chosen_model_by_validation": {
+    "total_flights": "seasonal_naive_7",
+    "delay_share": "catboost"
+  },
+  "snapshot_sha256": "1a508e3d341058f3fbfb356e67447be647c7dfefc8793a2ef01636d9e10a2cf3",
+  "python": "3.14.3",
+  "versions": {
+    "pandas": "3.0.5",
+    "numpy": "2.5.3",
+    "SQLAlchemy": "2.0.52",
+    "scikit-learn": "1.9.1",
+    "catboost": "1.2.10",
+    "matplotlib": "3.11.2"
+  }
+}

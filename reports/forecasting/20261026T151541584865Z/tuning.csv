@@ -1,0 +1,5 @@
+target,depth,trees,validation_MAE
+total_flights,4,225,25.54742123000861
+total_flights,6,273,26.39210006408617
+delay_share,4,78,7.1860293964142885
+delay_share,6,66,7.157198943752481

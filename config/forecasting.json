@@ -1,0 +1,6 @@
+{
+  "airports": ["ATL", "DFW", "JFK", "LAX", "ORD"],
+  "targets": ["total_flights", "delay_share"],
+  "expected_selection": {"total_flights": "seasonal_naive_7", "delay_share": "catboost"},
+  "horizon_days": 1
+}

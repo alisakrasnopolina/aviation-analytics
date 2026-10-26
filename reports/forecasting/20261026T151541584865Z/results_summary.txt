@@ -1,0 +1,6 @@
+total_flights, seasonal_naive_7: MAE = 27.242 рейсов; RMSE = 61.475.
+total_flights, catboost: MAE = 27.088 рейсов; RMSE = 46.738.
+Рабочая модель, выбранная по валидации: seasonal_naive_7.
+delay_share, seasonal_naive_7: MAE = 10.162 процентного пункта; RMSE = 14.736.
+delay_share, catboost: MAE = 6.332 процентного пункта; RMSE = 9.634.
+Рабочая модель, выбранная по валидации: catboost.

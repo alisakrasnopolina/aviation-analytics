@@ -6,3 +6,8 @@ python-dotenv
 PyYAML
 jupyter
 ipykernel
+numpy
+scikit-learn
+catboost
+matplotlib
+joblib
