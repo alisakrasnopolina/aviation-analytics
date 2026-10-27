@@ -1,0 +1,12 @@
+{
+  "run_id": "20261027T151216-18acb0387c36",
+  "status": "SUCCESS",
+  "is_demo": true,
+  "catalog_version": "fae00da9d48d357c6c84c428d9c65cedd98e587b2cf6aa7104432ff300a452eb",
+  "steps": [
+    {
+      "step": "history_capture",
+      "status": "SUCCESS"
+    }
+  ]
+}

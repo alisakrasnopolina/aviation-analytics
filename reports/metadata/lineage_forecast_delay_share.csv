@@ -1,0 +1,23 @@
+﻿source_id,source_location,target_id,target_location,transformation_id,file_path
+forecast_batches,meta.forecast_batches,bi_next,gold.airport_forecasts_bi,bi_forecast_views,sql/010_create_forecasting_tables.sql
+forecast_values,gold.airport_forecasts,bi_next,gold.airport_forecasts_bi,bi_forecast_views,sql/010_create_forecasting_tables.sql
+source_bts,BTS Reporting Carrier On-Time Performance,bronze_bts,bronze.bts_flights_raw,ingest_bts,src/ingestion/bts.py
+source_weather,Open-Meteo Historical API,bronze_weather,bronze.weather_hourly_raw,ingest_weather,src/ingestion/weather.py
+bronze_bts,bronze.bts_flights_raw,dim_airline,silver.dim_airline,build_silver,transformations/silver.sql
+bronze_bts,bronze.bts_flights_raw,dim_airport,silver.dim_airport,build_silver,transformations/silver.sql
+gold_daily,gold.airport_daily,features,src/forecasting/core.py::make_features,feature_engineering,src/forecasting/core.py
+forecast_experiments,meta.forecast_experiments,forecast_batches,meta.forecast_batches,predict,src/forecasting/predict.py
+forecast_values,gold.airport_forecasts,forecast_batches,meta.forecast_batches,predict,src/forecasting/predict.py
+notebook_results,reports/forecasting/,forecast_experiments,meta.forecast_experiments,import_experiment,src/forecasting/import_run.py
+features,src/forecasting/core.py::make_features,forecast_values,gold.airport_forecasts,predict,src/forecasting/predict.py
+gold_daily,gold.airport_daily,forecast_values,gold.airport_forecasts,predict,src/forecasting/predict.py
+saved_models,models/forecasting/,forecast_values,gold.airport_forecasts,predict,src/forecasting/predict.py
+silver_flights,silver.flights,gold_daily,gold.airport_daily,build_gold,transformations/gold.sql
+silver_weather,silver.weather_hourly,gold_daily,gold.airport_daily,build_gold,transformations/gold.sql
+gold_daily,gold.airport_daily,notebook_results,reports/forecasting/,notebook,notebooks/03_forecasting.ipynb
+features,src/forecasting/core.py::make_features,saved_models,models/forecasting/,train,src/forecasting/predict.py
+bronze_bts,bronze.bts_flights_raw,silver_flights,silver.flights,build_silver,transformations/silver.sql
+dim_airline,silver.dim_airline,silver_flights,silver.flights,build_silver,transformations/silver.sql
+dim_airport,silver.dim_airport,silver_flights,silver.flights,build_silver,transformations/silver.sql
+bronze_weather,bronze.weather_hourly_raw,silver_weather,silver.weather_hourly,build_silver,transformations/silver.sql
+dim_airport,silver.dim_airport,silver_weather,silver.weather_hourly,build_silver,transformations/silver.sql

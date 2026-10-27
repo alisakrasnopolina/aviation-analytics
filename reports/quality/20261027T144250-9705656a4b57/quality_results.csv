@@ -1,0 +1,16 @@
+﻿check_id,check_name,object_name,category,severity,allowed_violations,violations,status,details,duration_ms
+schema_types,Наличие столбцов и типы,Gold/Bronze/Silver,types,critical,0,0,PASS,Количество отсутствующих столбцов или несовместимых типов.,3.389
+gold_not_empty,Gold не пуст,gold.airport_daily,completeness,critical,0,0,PASS,Пустая витрина: 1 нарушение.,1.174
+gold_unique,Уникальность аэропорт–дата,gold.airport_daily,uniqueness,critical,0,0,PASS,Число лишних строк с повторяющимся ключом.,2.239
+gold_required,Обязательные поля,gold.airport_daily,completeness,critical,0,0,PASS,Количество строк с пропуском ключа или показателя.,1.514
+gold_ranges,Диапазоны показателей,gold.airport_daily,ranges,critical,0,0,PASS,"Неположительный знаменатель, отрицательные количества или доля вне 0–100; NULL проверяется отдельно.",1.524
+gold_consistency,Согласованность количеств,gold.airport_daily,consistency,critical,0,0,PASS,Перенаправленные рейсы могут входить в неотменённые: их не прибавляем повторно.,1.584
+delay_formula,Формула доли задержек,gold.airport_daily,consistency,critical,0,0,PASS,Проверка формулы в процентах с допустимой погрешностью.,2.586
+gold_airport_fk,Аэропорты Gold в справочнике,gold.airport_daily,referential,critical,0,0,PASS,Количество строк без справочника аэропорта.,1.736
+gold_calendar,Полнота и актуальность Gold по конфигурации,gold.airport_daily,coverage,critical,0,0,PASS,Количество отсутствующих пар аэропорт–дата; даты после настроенного периода допускаются.,3.268
+bts_calendar,Покрытие BTS по конфигурации,bronze.bts_flights_raw,freshness,critical,0,0,PASS,"Проверяется наличие рейсов каждый день, а не полнота внешнего архива BTS до отдельного рейса.",383.503
+weather_calendar,Покрытие погоды по конфигурации,bronze.weather_hourly_raw,freshness,critical,0,0,PASS,Нет дня полностью без погоды; наличие всех 24 часов эта проверка не гарантирует.,27.661
+silver_flight_fk,Ссылки рейсов Silver,silver.flights,referential,critical,0,0,PASS,Количество рейсов без аэропорта или авиакомпании в справочнике.,234.235
+silver_weather_unique,Уникальность почасовой погоды,silver.weather_hourly,uniqueness,critical,0,0,PASS,Число лишних записей по аэропорту и времени.,44.344
+gold_weather_complete,Полнота погодных признаков,gold.airport_daily,completeness,warning,0,0,PASS,"Пропуски, бесконечности, NaN или отрицательные осадки/ветер. По умолчанию предупреждение: CatBoost допускает NaN в числовой погоде.",2.008
+gold_weather_reconcile,Погодные агрегаты Gold согласованы с Silver,gold.airport_daily,consistency,warning,0,0,PASS,Сверка суточного объединения и агрегатов; не доказывает правильность временной зоны исходного API.,27.983

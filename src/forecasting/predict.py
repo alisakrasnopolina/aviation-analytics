@@ -1,4 +1,5 @@
 """Прогноз из сохранённых моделей и отдельное явное переобучение."""
+from src.quality import assert_quality
 from pathlib import Path
 from datetime import datetime,timezone
 import hashlib
@@ -40,6 +41,7 @@ def bundle(run_dir,model_dir):
 
 
 def predict(engine,run_dir,model_dir=None):
+    assert_quality(engine=engine,source='forecast_predict')
     manifest,training,models,model_hash,_=bundle(run_dir,model_dir)
     history=read_history(engine)
     prefix=history.loc[history.flight_date<=training.flight_date.max()]
@@ -85,6 +87,7 @@ def predict(engine,run_dir,model_dir=None):
 
 
 def train(engine,run_dir):
+    assert_quality(engine=engine,source='forecast_train')
     manifest=load_manifest(run_dir)
     history=read_history(engine)
     require(history.flight_date.max()>=pd.Timestamp(manifest['test_end']),'История заканчивается раньше эксперимента.')

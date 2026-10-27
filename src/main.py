@@ -1,3 +1,4 @@
+from src.quality import assert_quality
 from src.config import load_config
 from src.ingestion.bts import run_bts_pipeline
 from src.ingestion.weather import run_weather_pipeline
@@ -41,6 +42,7 @@ def main():
         "4. Обработка данных Bronze -> Silver -> Gold"
     )
     run_transformations()
+    assert_quality(source='main_after_gold')
 
     print_section(
         "Конвейер обработки данных успешно завершён"

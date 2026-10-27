@@ -1,0 +1,10 @@
+{
+  "run_id": "20261027T141919-31d7238c4a2c",
+  "status": "FAIL",
+  "is_demo": true,
+  "total_checks": 15,
+  "passed_checks": 6,
+  "warning_checks": 2,
+  "failed_checks": 7,
+  "error_checks": 0
+}

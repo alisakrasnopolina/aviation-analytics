@@ -246,3 +246,10 @@ logs/
 # OS
 .DS_Store
 Thumbs.db
+
+# Local backups created by integration installers
+reports/quality_install_backups/
+reports/history_install_backups/
+
+# Temporary Word files
+~$*.docx

@@ -1,0 +1,13 @@
+{
+  "run_id": "20261027T144324-05b45327efc6",
+  "status": "FAILED",
+  "is_demo": true,
+  "catalog_version": "0221a8e7c6c595cc87ab28d2296108229208f650638763caf01be518d9429348",
+  "steps": [
+    {
+      "step": "quality",
+      "status": "FAILED",
+      "error_type": "QualityGateError"
+    }
+  ]
+}

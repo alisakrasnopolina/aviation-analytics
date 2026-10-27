@@ -1,0 +1,16 @@
+{
+  "run_id": "20261027T150606-a8e65ff79d28",
+  "status": "SUCCESS",
+  "is_demo": false,
+  "catalog_version": "fae00da9d48d357c6c84c428d9c65cedd98e587b2cf6aa7104432ff300a452eb",
+  "steps": [
+    {
+      "step": "quality",
+      "status": "SUCCESS"
+    },
+    {
+      "step": "predict",
+      "status": "SUCCESS"
+    }
+  ]
+}

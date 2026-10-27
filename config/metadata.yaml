@@ -1,0 +1,400 @@
+version: 1
+datasets:
+- dataset_id: source_bts
+  name: BTS TranStats
+  layer: external
+  kind: external
+  location: BTS Reporting Carrier On-Time Performance
+  grain: рейс
+  description: Помесячные ZIP/CSV; доступность с задержкой.
+- dataset_id: source_weather
+  name: Open-Meteo
+  layer: external
+  kind: external
+  location: Open-Meteo Historical API
+  grain: аэропорт–час
+  description: Фактическая архивная погода, не прогноз погоды.
+- dataset_id: bronze_bts
+  name: Исходные рейсы
+  layer: bronze
+  kind: table
+  location: bronze.bts_flights_raw
+  grain: рейс
+  description: Поля BTS и source_file; дедупликация по row_hash.
+- dataset_id: bronze_weather
+  name: Исходная погода
+  layer: bronze
+  kind: table
+  location: bronze.weather_hourly_raw
+  grain: аэропорт–час
+  description: Архивные погодные наблюдения и source_file.
+- dataset_id: dim_airport
+  name: Справочник аэропортов
+  layer: silver
+  kind: table
+  location: silver.dim_airport
+  grain: аэропорт
+  description: Коды, имена и координаты аэропортов.
+- dataset_id: dim_airline
+  name: Справочник авиакомпаний
+  layer: silver
+  kind: table
+  location: silver.dim_airline
+  grain: авиакомпания
+  description: Коды перевозчиков.
+- dataset_id: silver_flights
+  name: Очищенные рейсы
+  layer: silver
+  kind: table
+  location: silver.flights
+  grain: рейс
+  description: is_completed означает не отменённый рейс; diverted может пересекаться
+    с ним.
+- dataset_id: silver_weather
+  name: Очищенная погода
+  layer: silver
+  kind: table
+  location: silver.weather_hourly
+  grain: аэропорт–час
+  description: Погодные значения для суточной агрегации.
+- dataset_id: gold_daily
+  name: Суточная витрина
+  layer: gold
+  kind: table
+  location: gold.airport_daily
+  grain: аэропорт–дата
+  description: Рейсы, задержки и фактическая суточная погода.
+- dataset_id: quality_results
+  name: Результаты качества
+  layer: meta
+  kind: table
+  location: meta.quality_results
+  grain: запуск–проверка
+  description: 15 проверок, статусы PASS/WARN/FAIL/ERROR.
+- dataset_id: forecast_experiments
+  name: Эксперименты
+  layer: meta
+  kind: table
+  location: meta.forecast_experiments
+  grain: эксперимент
+  description: Зафиксированный эксперимент и его параметры.
+- dataset_id: forecast_backtest
+  name: Проверочные прогнозы
+  layer: gold
+  kind: table
+  location: gold.forecast_backtest
+  grain: эксперимент–аэропорт–дата–цель–модель
+  description: Ретроспективная проверка на validation/test.
+- dataset_id: forecast_metrics
+  name: Метрики моделей
+  layer: gold
+  kind: table
+  location: gold.forecast_metrics
+  grain: эксперимент–выборка–цель–модель–аэропорт
+  description: MAE и RMSE исходной оценки.
+- dataset_id: forecast_batches
+  name: Пакеты прогнозов
+  layer: meta
+  kind: table
+  location: meta.forecast_batches
+  grain: пакет
+  description: Отсечка истории и хеши истории/моделей.
+- dataset_id: forecast_values
+  name: Будущие прогнозы
+  layer: gold
+  kind: table
+  location: gold.airport_forecasts
+  grain: пакет–аэропорт–дата–цель–модель
+  description: Две модели, флаг выбранной модели.
+- dataset_id: bi_daily
+  name: Представление аналитики
+  layer: bi
+  kind: view
+  location: gold.airport_daily_bi
+  grain: аэропорт–дата
+  description: Витрина с кодом аэропорта для Power BI.
+- dataset_id: bi_backtest
+  name: Представление проверки
+  layer: bi
+  kind: view
+  location: gold.forecast_backtest_bi
+  grain: аэропорт–дата–цель–модель
+  description: Последний импортированный эксперимент.
+- dataset_id: bi_metrics
+  name: Представление метрик
+  layer: bi
+  kind: view
+  location: gold.forecast_metrics_bi
+  grain: выборка–цель–модель–аэропорт
+  description: Метрики последнего импортированного эксперимента.
+- dataset_id: bi_next
+  name: Представление будущего прогноза
+  layer: bi
+  kind: view
+  location: gold.airport_forecasts_bi
+  grain: аэропорт–дата–цель–модель
+  description: Один последний пакет, а не сумма пакетов.
+- dataset_id: features
+  name: Исторические признаки
+  layer: python
+  kind: virtual
+  location: src/forecasting/core.py::make_features
+  grain: аэропорт–прогнозируемая дата
+  description: Лаги, сдвинутые средние, календарь; будущие факты исключены.
+- dataset_id: saved_models
+  name: Сохранённые модели
+  layer: artifact
+  kind: file
+  location: models/forecasting/
+  grain: цель–версия обучения
+  description: full_history модели для применения; evaluation для исходного теста.
+- dataset_id: notebook_results
+  name: Результаты тетради
+  layer: artifact
+  kind: file
+  location: reports/forecasting/
+  grain: эксперимент
+  description: Снимок Gold, manifest и CSV; независимая проверка уже выполнена.
+- dataset_id: dashboard_analytics
+  name: Страница аналитики
+  layer: presentation
+  kind: file
+  location: reports/aviation_analytics.pbix
+  grain: страница–фильтры
+  description: Меры Power BI; каталог описывает их смысл, PBIX автоматически не разбирается.
+- dataset_id: dashboard_forecast
+  name: Страница прогнозирования
+  layer: presentation
+  kind: file
+  location: reports/aviation_analytics.pbix
+  grain: страница–фильтры
+  description: Тестовые графики, метрики и выбранный прогноз следующего дня.
+- dataset_id: gold_daily_history
+  name: История версий Gold
+  layer: gold
+  kind: table
+  location: gold.airport_daily_history
+  grain: аэропорт–дата–версия
+  description: Версии состояния, DELETE как маркер удаления; updated_at не создаёт
+    версию. Начало истории — внедрение 013.
+transformations:
+- transformation_id: ingest_bts
+  name: Загрузка BTS
+  file_path: src/ingestion/bts.py
+  description: Загрузка по настроенному периоду; при отсутствии новых данных операция
+    может быть без новых строк.
+- transformation_id: ingest_weather
+  name: Загрузка погоды
+  file_path: src/ingestion/weather.py
+  description: Архивный API, JSON и Bronze.
+- transformation_id: build_silver
+  name: Формирование Silver
+  file_path: transformations/silver.sql
+  description: Справочники, очистка, признаки рейсов, перенос погоды.
+- transformation_id: build_gold
+  name: Формирование Gold
+  file_path: transformations/gold.sql
+  description: Группировка по аэропорту/дате и объединение погоды.
+- transformation_id: quality
+  name: Контроль качества
+  file_path: src/quality.py
+  description: Рабочие проверки; результат FAIL блокирует последующий шаг.
+- transformation_id: feature_engineering
+  name: Признаки
+  file_path: src/forecasting/core.py
+  description: История до t-1; не отдельный шаг нового оркестратора, выполняется внутри
+    predict/train.
+- transformation_id: train
+  name: Переобучение
+  file_path: src/forecasting/predict.py
+  description: Явное обучение по зафиксированным настройкам; не выполняется при обычном
+    predict.
+- transformation_id: notebook
+  name: Исходный эксперимент
+  file_path: notebooks/03_forecasting.ipynb
+  description: Описание ранее выполненной тетради, без ретроспективного создания журналов
+    запусков.
+- transformation_id: import_experiment
+  name: Импорт эксперимента
+  file_path: src/forecasting/import_run.py
+  description: Импорт результатов с валидацией метрик.
+- transformation_id: predict
+  name: Однодневный прогноз
+  file_path: src/forecasting/predict.py
+  description: Сохранённые модели и текущая история; внутри также повторяется quality
+    gate.
+- transformation_id: bi_daily_view
+  name: Представление аналитики
+  file_path: sql/009_create_bi_views.sql
+  description: SQL view для DirectQuery.
+- transformation_id: bi_forecast_views
+  name: Представления прогноза
+  file_path: sql/010_create_forecasting_tables.sql
+  description: Последний эксперимент/пакет.
+- transformation_id: power_bi
+  name: Отображение Power BI
+  file_path: reports/aviation_analytics.pbix
+  description: Срезы и меры внутри PBIX; не Python-шаг и не журнал обновления Power
+    BI.
+- transformation_id: history_capture
+  name: Фиксация изменений Gold
+  file_path: sql/013_create_gold_history.sql
+  description: Триггер в транзакции изменения Gold. Контекст связывает версию с общим
+    запуском и шагом.
+edges:
+- source_id: source_bts
+  target_id: bronze_bts
+  transformation_id: ingest_bts
+- source_id: source_weather
+  target_id: bronze_weather
+  transformation_id: ingest_weather
+- source_id: bronze_bts
+  target_id: dim_airline
+  transformation_id: build_silver
+- source_id: bronze_bts
+  target_id: dim_airport
+  transformation_id: build_silver
+- source_id: bronze_bts
+  target_id: silver_flights
+  transformation_id: build_silver
+- source_id: dim_airline
+  target_id: silver_flights
+  transformation_id: build_silver
+- source_id: dim_airport
+  target_id: silver_flights
+  transformation_id: build_silver
+- source_id: bronze_weather
+  target_id: silver_weather
+  transformation_id: build_silver
+- source_id: dim_airport
+  target_id: silver_weather
+  transformation_id: build_silver
+- source_id: silver_flights
+  target_id: gold_daily
+  transformation_id: build_gold
+- source_id: silver_weather
+  target_id: gold_daily
+  transformation_id: build_gold
+- source_id: bronze_bts
+  target_id: quality_results
+  transformation_id: quality
+- source_id: bronze_weather
+  target_id: quality_results
+  transformation_id: quality
+- source_id: silver_flights
+  target_id: quality_results
+  transformation_id: quality
+- source_id: silver_weather
+  target_id: quality_results
+  transformation_id: quality
+- source_id: dim_airport
+  target_id: quality_results
+  transformation_id: quality
+- source_id: dim_airline
+  target_id: quality_results
+  transformation_id: quality
+- source_id: gold_daily
+  target_id: quality_results
+  transformation_id: quality
+- source_id: gold_daily
+  target_id: features
+  transformation_id: feature_engineering
+- source_id: features
+  target_id: saved_models
+  transformation_id: train
+- source_id: gold_daily
+  target_id: notebook_results
+  transformation_id: notebook
+- source_id: notebook_results
+  target_id: forecast_experiments
+  transformation_id: import_experiment
+- source_id: notebook_results
+  target_id: forecast_backtest
+  transformation_id: import_experiment
+- source_id: notebook_results
+  target_id: forecast_metrics
+  transformation_id: import_experiment
+- source_id: gold_daily
+  target_id: forecast_values
+  transformation_id: predict
+- source_id: features
+  target_id: forecast_values
+  transformation_id: predict
+- source_id: saved_models
+  target_id: forecast_values
+  transformation_id: predict
+- source_id: forecast_experiments
+  target_id: forecast_batches
+  transformation_id: predict
+- source_id: forecast_values
+  target_id: forecast_batches
+  transformation_id: predict
+- source_id: gold_daily
+  target_id: bi_daily
+  transformation_id: bi_daily_view
+- source_id: dim_airport
+  target_id: bi_daily
+  transformation_id: bi_daily_view
+- source_id: forecast_backtest
+  target_id: bi_backtest
+  transformation_id: bi_forecast_views
+- source_id: forecast_metrics
+  target_id: bi_metrics
+  transformation_id: bi_forecast_views
+- source_id: forecast_values
+  target_id: bi_next
+  transformation_id: bi_forecast_views
+- source_id: forecast_batches
+  target_id: bi_next
+  transformation_id: bi_forecast_views
+- source_id: bi_daily
+  target_id: dashboard_analytics
+  transformation_id: power_bi
+- source_id: bi_backtest
+  target_id: dashboard_forecast
+  transformation_id: power_bi
+- source_id: bi_metrics
+  target_id: dashboard_forecast
+  transformation_id: power_bi
+- source_id: bi_next
+  target_id: dashboard_forecast
+  transformation_id: power_bi
+- source_id: gold_daily
+  target_id: gold_daily_history
+  transformation_id: history_capture
+metrics:
+- metric_id: total_flights
+  name: Суточное число рейсов
+  dataset_id: gold_daily
+  formula: COUNT(*) по origin_airport_id, flight_date в silver.flights
+  unit: рейсы
+  source_fields:
+  - BTS FlightDate
+  - BTS Origin
+  - silver.flights.flight_id
+  limitations: Включает отменённые и перенаправленные; только рейсы, представленные
+    в BTS.
+- metric_id: delay_share
+  name: Доля задержек вылета ≥15 минут
+  dataset_id: gold_daily
+  formula: 100.0 * delayed_flights / completed_flights; completed=не отменён; delayed=не
+    отменён и dep_delay_minutes>=15
+  unit: проценты (0–100)
+  source_fields:
+  - BTS Cancelled
+  - BTS DepDelayMinutes
+  - BTS FlightDate
+  - BTS Origin
+  limitations: При completed=0 доля не определена; контроль качества блокирует прогноз.
+    В Gold SQL сейчас подставляет 0.
+- metric_id: forecast_delay_share
+  name: Прогноз доли задержек
+  dataset_id: bi_next
+  formula: CatBoost по лагам целей/отмен, исторической погоде и календарю; selected_for_use=True
+  unit: проценты (0–100)
+  source_fields:
+  - gold.airport_daily
+  - saved full_history model
+  - experiment chosen_model_by_validation
+  limitations: Горизонт 1 день; история до t-1; BTS публикуется с задержкой; тестовые
+    метрики относятся к исходной evaluation-модели.

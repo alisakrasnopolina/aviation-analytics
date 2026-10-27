@@ -1,0 +1,21 @@
+# Периоды и аэропорты берутся из существующего config/project.yaml.
+# Проверки ERROR (ошибка выполнения SQL) всегда блокируют прогноз.
+statement_timeout_seconds: 120
+share_tolerance: 0.000001
+weather_tolerance: 0.000001
+checks:
+  schema_types: {severity: critical, max_violations: 0}
+  gold_not_empty: {severity: critical, max_violations: 0}
+  gold_unique: {severity: critical, max_violations: 0}
+  gold_required: {severity: critical, max_violations: 0}
+  gold_ranges: {severity: critical, max_violations: 0}
+  gold_consistency: {severity: critical, max_violations: 0}
+  delay_formula: {severity: critical, max_violations: 0}
+  gold_airport_fk: {severity: critical, max_violations: 0}
+  gold_calendar: {severity: critical, max_violations: 0}
+  bts_calendar: {severity: critical, max_violations: 0}
+  weather_calendar: {severity: critical, max_violations: 0}
+  silver_flight_fk: {severity: critical, max_violations: 0}
+  silver_weather_unique: {severity: critical, max_violations: 0}
+  gold_weather_complete: {severity: warning, max_violations: 0}
+  gold_weather_reconcile: {severity: warning, max_violations: 0}

@@ -1,3 +1,4 @@
+from src.history import bind_history_context
 from pathlib import Path
 
 from src.database import get_engine
@@ -18,6 +19,7 @@ def execute_sql_file(filename):
     engine = get_engine()
 
     with engine.begin() as connection:
+        bind_history_context(connection,filename)
         connection.exec_driver_sql(sql)
 
 

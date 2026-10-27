@@ -66,7 +66,10 @@ def apply_migration(path: Path):
     engine = get_engine()
 
     with engine.begin() as connection:
-        connection.exec_driver_sql(sql)
+        connection.exec_driver_sql(
+            sql,
+            execution_options={"no_parameters": True},
+        )
 
         connection.execute(
             text("""
